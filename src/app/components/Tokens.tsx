@@ -218,7 +218,11 @@ function Tokens({ isActive }: { isActive: boolean }) {
           }}
         >
           <Box>
-            <StyledButton style={{ height: '100%' }} type="button" onClick={() => setTokenSetsVisible(!tokenSetsVisible)}>
+            <StyledButton
+              style={{ height: '100%' }}
+              type="button"
+              onClick={() => setTokenSetsVisible(!tokenSetsVisible)}
+            >
               <Box
                 css={{
                   fontWeight: '$bold',
@@ -292,10 +296,7 @@ function Tokens({ isActive }: { isActive: boolean }) {
             {activeTokensTab === 'json' ? (
               <Box css={{ position: 'relative', height: '100%' }}>
                 <JSONEditor stringTokens={stringTokens} handleChange={handleChangeJSON} hasError={Boolean(error)} />
-                <StatusToast
-                  open={Boolean(error)}
-                  error={error}
-                />
+                <StatusToast open={Boolean(error)} error={error} />
               </Box>
             ) : (
               <Box css={{ width: '100%', paddingBottom: '$6' }} className="content scroll-container">

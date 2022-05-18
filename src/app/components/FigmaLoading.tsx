@@ -44,8 +44,6 @@ export default function FigmaLoading() {
         </Stack>
         <Stack direction="column" gap={4} align="center" css={{ color: '$loadingScrenFgMuted' }}>
           Version
-          {' '}
-          {pjs.plugin_version}
         </Stack>
         <Stack direction="row" gap={4} justify="center" align="center">
           <Spinner inverse />
@@ -54,7 +52,9 @@ export default function FigmaLoading() {
           </Stack>
         </Stack>
         <Stack direction="row" gap={4}>
-          <StyledLoadingButton type="button" onClick={handleCancel}>Cancel</StyledLoadingButton>
+          <StyledLoadingButton type="button" onClick={handleCancel}>
+            Cancel
+          </StyledLoadingButton>
         </Stack>
       </Stack>
     </StyledLoadingScreen>

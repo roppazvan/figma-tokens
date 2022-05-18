@@ -10,14 +10,22 @@ import { Provider } from 'react-redux';
 import * as Sentry from '@sentry/react';
 import { initializeAnalytics } from '../utils/analytics';
 import App from './components/App';
+import PreviewApp from './components/PreviewApp';
 import Heading from './components/Heading';
 import { store } from './store';
 import * as pjs from '../../package.json';
 import Stack from './components/Stack';
 import Text from './components/Text';
 
-initializeAnalytics();
+// @ts-ignore
+if (module.hot) {
+  // @ts-ignore
+  module.hot.accept();
+}
 
+initializeAnalytics();
+const { PREVIEW_ENV } = process.env;
+console.log(PREVIEW_ENV);
 if (process.env.ENVIRONMENT === 'production' || process.env.ENVIRONMENT === 'beta') {
   Sentry.init({
     dsn: 'https://26bac1a4b1ba4d91bc9420d10d95bb3e@o386310.ingest.sentry.io/5220409',
@@ -31,8 +39,12 @@ function ErrorFallback({ error }: { error: Error }) {
     <Stack direction="column" align="center" gap={4} justify="center" css={{ height: '100%', textAlign: 'center' }}>
       <Heading>Something went wrong!</Heading>
       <Stack direction="column" gap={2}>
-        <Text size="xsmall" muted>{error.message}</Text>
-        <Text size="xsmall" muted>Restart the plugin and try again.</Text>
+        <Text size="xsmall" muted>
+          {error.message}
+        </Text>
+        <Text size="xsmall" muted>
+          Restart the plugin and try again.
+        </Text>
       </Stack>
     </Stack>
   );
@@ -40,9 +52,7 @@ function ErrorFallback({ error }: { error: Error }) {
 
 ReactDOM.render(
   <Sentry.ErrorBoundary fallback={ErrorFallback}>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <Provider store={store}>{PREVIEW_ENV ? <PreviewApp /> : <App />}</Provider>
   </Sentry.ErrorBoundary>,
-  document.getElementById('app'),
+  document.getElementById('app')
 );

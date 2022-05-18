@@ -44,6 +44,8 @@ import { defaultWorker } from './Worker';
 import { getUsedTokenSet } from '@/utils/getUsedTokenSet';
 import { updateLocalTokensData } from '@/utils/figma';
 
+const { PREVIEW_ENV } = process.env;
+
 let inspectDeep = false;
 let shouldSendSelectionValues = false;
 
@@ -51,8 +53,8 @@ figma.skipInvisibleInstanceChildren = true;
 
 figma.showUI(__html__, {
   themeColors: true,
-  width: DefaultWindowSize.width,
-  height: DefaultWindowSize.height,
+  width: PREVIEW_ENV === 'browser' ? 50 : DefaultWindowSize.width,
+  height: PREVIEW_ENV === 'browser' ? 50 : DefaultWindowSize.height,
 });
 
 figma.on('close', () => {

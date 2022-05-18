@@ -44,7 +44,9 @@ function InitiatorContainer({ ldClient, identificationPromise }: Props) {
         pluginMessage: PostToUIMessage;
       };
     }) => {
+      // console.log('init', event.data);
       if (event.data.pluginMessage) {
+        // console.log('initiator', event.data.pluginMessage);
         const { pluginMessage } = event.data;
         switch (pluginMessage.type) {
           case MessageFromPluginTypes.SELECTION: {
@@ -79,6 +81,7 @@ function InitiatorContainer({ ldClient, identificationPromise }: Props) {
           case MessageFromPluginTypes.REMOTE_COMPONENTS:
             break;
           case MessageFromPluginTypes.TOKEN_VALUES: {
+            console.log({ pluginMessage });
             const { values } = pluginMessage;
             if (values) {
               dispatch.tokenState.setTokenData(values);
@@ -106,9 +109,7 @@ function InitiatorContainer({ ldClient, identificationPromise }: Props) {
             setStorageType({ provider: pluginMessage.storageType });
             break;
           case MessageFromPluginTypes.API_CREDENTIALS: {
-            const {
-              status, credentials, usedTokenSet,
-            } = pluginMessage;
+            const { status, credentials, usedTokenSet } = pluginMessage;
             if (status === true) {
               try {
                 track('Fetched from remote', { provider: credentials.provider });
@@ -117,9 +118,7 @@ function InitiatorContainer({ ldClient, identificationPromise }: Props) {
                 // wait of identification
                 const receivedFlags = await identificationPromise;
 
-                const {
-                  id, provider, secret, baseUrl,
-                } = credentials;
+                const { id, provider, secret, baseUrl } = credentials;
                 const [owner, repo] = id.split('/');
                 if (provider === StorageProviderType.GITHUB) {
                   const storageClient = new GithubTokenStorage(secret, owner, repo, baseUrl);
@@ -130,7 +129,11 @@ function InitiatorContainer({ ldClient, identificationPromise }: Props) {
                 dispatch.uiState.setApiData(credentials);
                 dispatch.uiState.setLocalApiState(credentials);
 
-                const remoteData = await pullTokens({ context: credentials, usedTokenSet, featureFlags: receivedFlags });
+                const remoteData = await pullTokens({
+                  context: credentials,
+                  usedTokenSet,
+                  featureFlags: receivedFlags,
+                });
                 const existTokens = Object.values(remoteData?.tokens ?? {}).some((value) => value.length > 0);
                 if (existTokens) dispatch.uiState.setActiveTab(Tabs.TOKENS);
                 else dispatch.uiState.setActiveTab(Tabs.START);
